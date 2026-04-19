@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+build/
+
+# logs
+*.log
+
+# environment files
+.env*
+!.env.example
+
+# firebase secrets
+serviceAccountKey.json
+
+# OS files
+.DS_Store
+
+# coverage
+coverage/
+
+# editor
+.vscode/

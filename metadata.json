@@ -1,0 +1,6 @@
+{
+  "name": "SplitShare",
+  "description": "A collaborative expense management app for groups to track, split, and settle shared costs during trips and activities.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

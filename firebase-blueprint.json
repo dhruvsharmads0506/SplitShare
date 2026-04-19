@@ -1,0 +1,140 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "photoURL": { "type": "string" },
+        "upiId": { "type": "string" },
+        "accountNumber": { "type": "string" },
+        "ifscCode": { "type": "string" },
+        "fcmToken": { "type": "string" },
+        "pushNotificationsEnabled": { "type": "boolean" },
+        "emailNotificationsEnabled": { "type": "boolean" }
+      },
+      "required": ["uid", "displayName", "email"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "User notification",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["expense_added", "payment_reminder", "payment_settled", "other"] },
+        "isRead": { "type": "boolean" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "metadata": { "type": "object" }
+      },
+      "required": ["userId", "title", "message", "type", "isRead", "timestamp"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Global transaction record for history",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "receiverId": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "completed", "failed"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string" },
+        "groupId": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["senderId", "receiverId", "amount", "status", "createdAt", "createdBy"]
+    },
+    "Group": {
+      "title": "Group",
+      "description": "A group for sharing expenses",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "members": { "type": "array", "items": { "type": "string" } },
+        "inviteCode": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "currency": { "type": "string" },
+        "coverUrl": { "type": "string" }
+      },
+      "required": ["name", "createdBy", "members", "inviteCode", "createdAt", "currency"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "An expense added to a group",
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "paidBy": { "type": "string" },
+        "splitType": { "type": "string", "enum": ["equal", "unequal"] },
+        "splits": { "type": "object" },
+        "date": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["description", "amount", "paidBy", "splitType", "splits", "date", "createdBy"]
+    },
+    "Settlement": {
+      "title": "Settlement",
+      "description": "A settlement between two users in a group",
+      "type": "object",
+      "properties": {
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["from", "to", "amount", "date", "createdBy"]
+    },
+    "Contact": {
+      "title": "Contact",
+      "description": "A contact message from a user",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "userId": { "type": "string" }
+      },
+      "required": ["name", "email", "message", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/groups/{groupId}": {
+      "schema": "Group",
+      "description": "Expense groups"
+    },
+    "/groups/{groupId}/expenses/{expenseId}": {
+      "schema": "Expense",
+      "description": "Expenses within a group"
+    },
+    "/groups/{groupId}/settlements/{settlementId}": {
+      "schema": "Settlement",
+      "description": "Settlements within a group"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Global transaction records"
+    },
+    "/contacts/{contactId}": {
+      "schema": "Contact",
+      "description": "Contact messages from users"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "User notifications"
+    }
+  }
+}
