@@ -30,6 +30,20 @@ Track, split, and manage shared expenses with ease in a clean and user-friendly 
 <p align="center">⚠️ Note: First load may take a few seconds due to Render free tier cold start.</p>
 
 <hr/>
+<hr/>
+
+<h2 align="center">⚠️ Usage Policy</h2>
+
+<p align="center">
+You are welcome to use the live application.<br/>
+However, this source code is provided for <b>viewing and learning purposes only</b>.<br/>
+Copying, modifying, or redistributing the code is strictly prohibited.
+</p>
+
+
+
+<hr/>
+
 
 <h2 align="center">📸 UI Screenshots</h2>
 
@@ -47,7 +61,7 @@ Track, split, and manage shared expenses with ease in a clean and user-friendly 
 
 <hr/>
 
-<h2>🚀 Features</h2>
+<h2 align="center">🚀 Features</h2>
 
 <ul>
   <li>🔐 Secure User Authentication (Signup/Login with Firebase)</li>
@@ -115,7 +129,7 @@ Track, split, and manage shared expenses with ease in a clean and user-friendly 
 
 <hr/>
 
-<h2>🧑‍💻 Tech Stack</h2>
+<h2 align="center">🧑‍💻 Tech Stack</h2>
 
 <ul>
   <li><b>Frontend:</b> React + Vite</li>
@@ -128,7 +142,9 @@ Track, split, and manage shared expenses with ease in a clean and user-friendly 
 
 <hr/>
 
-<h2>⚙️ Installation</h2>
+
+
+<h2 align="center">⚙️ Installation</h2>
 
 <pre><code>
 git clone https://github.com/dhruvsharmads0506/splitshare.git
@@ -144,6 +160,8 @@ npm install
 npm run dev
 </code></pre>
 
+<p>App will run on: <b>http://localhost:5173</b></p>
+
 <hr/>
 
 <h2>🌐 Deployment (Render)</h2>
@@ -151,20 +169,23 @@ npm run dev
 <ol>
   <li>Push your project to GitHub</li>
   <li>Go to <b>https://render.com</b></li>
-  <li>Create a <b>New Web Service</b></li>
-  <li>Connect your GitHub repo</li>
-  <li>Set build command:
+  <li>Create a <b>Static Site</b> (IMPORTANT)</li>
+  <li>Connect your GitHub repository</li>
+  
+  <li><b>Build Command:</b>
     <pre><code>npm install && npm run build</code></pre>
   </li>
-  <li>Set start command:
-    <pre><code>npm run preview</code></pre>
-  </li>
-  <li>Deploy 🚀</li>
-</ol>
 
+  <li><b>Publish Directory:</b>
+    <pre><code>dist</code></pre>
+  </li>
+
+  <li>Click <b>Deploy</b> 🚀</li>
+</ol>
 <hr/>
 
-<h2>☕ Support the Project</h2>
+
+<h2 align="center">☕ Support the Project</h2>
 
 <div align="center">
   <p>If you like <b>SplitShare</b>, support development 💙</p>
@@ -177,19 +198,26 @@ npm run dev
 
 <hr/>
 
-<h2>🤝 Contributing</h2>
+<h2 align="center">🤝 Contributing</h2>
 
 <p>Contributions are currently not open to the public.
 If you have suggestions or feedback, feel free to reach out.</p>
 
 <hr/>
 
-<h2>📄 License</h2>
+<h2 align="center">📄 License</h2>
 
 <p>SplitShare Custom License (Proprietary)</p>
 
 <hr/>
 
 <div align="center">
-  <p>Made with ❤️ by <b>Dhruv Sharma</b></p>
+  <p>Made with ❤️ by <b>DHRUV SHARMA</b></p>
+</div>
+
+<hr/>
+
+<div align="center">
+  <p>© 2026 Dhruv Sharma. All rights reserved.</p>
+  <p>No part of this project may be used, copied, or distributed without permission.</p>
 </div>
