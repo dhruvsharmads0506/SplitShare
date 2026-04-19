@@ -185,7 +185,7 @@ npm run dev
 
 <h2>📄 License</h2>
 
-<p>MIT License</p>
+<p>SplitShare Custom License (Proprietary)</p>
 
 <hr/>
 
