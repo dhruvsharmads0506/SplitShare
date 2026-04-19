@@ -179,7 +179,8 @@ npm run dev
 
 <h2>🤝 Contributing</h2>
 
-<p>Pull requests are welcome! Feel free to fork and improve.</p>
+<p>Contributions are currently not open to the public.
+If you have suggestions or feedback, feel free to reach out.</p>
 
 <hr/>
 
