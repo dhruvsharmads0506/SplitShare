@@ -49,13 +49,67 @@ Track, split, and manage shared expenses with ease in a clean and user-friendly 
 <h2>🚀 Features</h2>
 
 <ul>
-  <li>🔐 User Authentication (Signup & Login)</li>
+  <li>🔐 Secure User Authentication (Signup/Login with Firebase)</li>
   <li>☑️ Terms & Conditions validation</li>
-  <li>👥 Create & manage groups</li>
-  <li>🧑‍🤝‍🧑 Member avatars</li>
-  <li>📊 Expense tracking & splitting</li>
-  <li>🔔 Real-time updates (Firebase)</li>
-  <li>⚡ Fast & responsive UI</li>
+  
+  <li>👥 Group Management</li>
+  <ul>
+    <li>Create, join, and manage multiple groups</li>
+    <li>Add/remove members easily</li>
+    <li>Member avatars for better identity</li>
+  </ul>
+
+  <li>📊 Expense Management</li>
+  <ul>
+    <li>Add and split expenses among group members</li>
+    <li>Equal & custom split options</li>
+    <li>Real-time balance calculation</li>
+  </ul>
+
+  <li>💬 Group Chat (Upcoming / Planned)</li>
+  <ul>
+    <li>Real-time messaging within groups</li>
+    <li>Discuss expenses instantly</li>
+  </ul>
+
+  <li>🛠️ Admin Panel (Planned)</li>
+  <ul>
+    <li>Admin control over groups</li>
+    <li>Manage users and expenses</li>
+    <li>Monitor activity logs</li>
+  </ul>
+
+  <li>🔔 Notifications System</li>
+  <ul>
+    <li>Payment reminders</li>
+    <li>New expense alerts</li>
+    <li>Group activity updates</li>
+  </ul>
+
+  <li>📧 Automated Email Notification System</li>
+  <ul>
+    <li>Real-time email alerts for new expenses</li>
+    <li>Automated payment reminders to group members</li>
+    <li>Group activity notifications via email</li>
+    <li>Secure email integration using Firebase / SMTP</li>
+  </ul>
+
+  <li>🤖 AI-Powered Features</li>
+  <ul>
+    <li>Smart expense summaries</li>
+    <li>Auto note/description generation (Gemini API)</li>
+  </ul>
+
+  <li>📱 Responsive Design</li>
+  <ul>
+    <li>Works seamlessly on mobile, tablet & desktop</li>
+  </ul>
+
+  <li>⚡ Performance Optimized</li>
+  <ul>
+    <li>Fast loading with Vite</li>
+    <li>Optimized UI & API calls</li>
+  </ul>
 </ul>
 
 <hr/>
@@ -76,7 +130,7 @@ Track, split, and manage shared expenses with ease in a clean and user-friendly 
 <h2>⚙️ Installation</h2>
 
 <pre><code>
-git clone https://github.com/your-username/splitshare.git
+git clone https://github.com/dhruvsharmads0506/splitshare.git
 cd splitshare
 npm install
 </code></pre>
