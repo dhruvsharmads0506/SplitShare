@@ -18,11 +18,11 @@ Track, split, and manage shared expenses with ease in a clean and user-friendly 
 <div align="center">
   <p>Experience SplitShare live:</p>
 
-  <a href="https://split-share.onrender.com/" target="_blank">
+  <a href="https://splitshare-vywe.onrender.com/" target="_blank">
     <img src="https://img.shields.io/badge/🚀_LIVE_APP-555555?style=for-the-badge&logoColor=white" />
   </a>
 
-  <a href="https://split-share.onrender.com/" target="_blank">
+  <a href="https://splitshare-vywe.onrender.com/" target="_blank">
     <img src="https://img.shields.io/badge/OPEN_PROJECT-00C853?style=for-the-badge&logoColor=white" />
   </a>
 </div>
