@@ -34,13 +34,14 @@ Track, split, and manage shared expenses with ease in a clean and user-friendly 
 <h2 align="center">📸 UI Screenshots</h2>
 
 <div align="center">
-  <img src="assests/Screenshot 2026-04-16 013536.png" width="60%" style="margin:12px; border-radius:12px;" />
-  <img src="assests/Screenshot 2026-04-16 013646.png" width="60%" style="margin:12px; border-radius:12px;" />
+  <img src="src/Assets/Screenshot 2026-04-19 170848.png" width="60%" style="margin:12px; border-radius:12px;" />
+  <img src="src/Assets/Screenshot 2026-04-19 170635.png" width="60%" style="margin:12px; border-radius:12px;" />
 </div>
 
 <div align="center">
-  <img src="assests/Screenshot 2026-04-16 013710.png" width="60%" style="margin:12px; border-radius:12px;" />
+  <img src="src/Assets/Screenshot 2026-04-19 170608.png" width="60%" style="margin:12px; border-radius:12px;" />
 </div>
+
 
 <p align="center">⚡ Clean and responsive UI of SplitShare</p>
 
@@ -168,7 +169,7 @@ npm run dev
 <div align="center">
   <p>If you like <b>SplitShare</b>, support development 💙</p>
 
-  <img src="assests/WhatsApp Image 2026-04-16 at 2.08.41 AM.jpeg" width="300" />
+  <img src="src/Assets/WhatsApp Image 2026-04-16 at 2.08.41 AM.jpeg" width="300" />
 
   <p><b>UPI:</b> dhruvsharmads0506@okicici</p>
   <p>🚀 Every contribution helps improve this project</p>
