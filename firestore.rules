@@ -175,7 +175,8 @@ service cloud.firestore {
       allow update: if isAuthenticated() && (
         (resource.data.createdBy == request.auth.uid && isValidGroup(request.resource.data)) ||
         (request.auth.uid in resource.data.members && isValidGroup(request.resource.data)) ||
-        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members']) && isAuthenticated())
+        // Allow group creator/admin to update members array only
+        (resource.data.createdBy == request.auth.uid && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members']))
       );
       allow delete: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
       

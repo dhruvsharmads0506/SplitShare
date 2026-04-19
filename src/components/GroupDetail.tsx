@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, ChangeEvent } from 'react';
-import { db, auth, doc, collection, query, onSnapshot, User, getDocs, where, addDoc, serverTimestamp, deleteDoc, orderBy, updateDoc } from '../firebase';
+import { db, auth, doc, collection, query, onSnapshot, User, getDocs, where, addDoc, serverTimestamp, deleteDoc, orderBy, updateDoc, arrayRemove } from '../firebase';
 import { Group, Expense, Settlement, UserProfile } from '../types';
 import { cn } from '../lib/utils';
 import { Button, buttonVariants } from './ui/button';
@@ -198,6 +198,7 @@ export default function GroupDetail({ groupId, onBack, currentUser }: GroupDetai
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [settlements, setSettlements] = useState<Settlement[]>([]);
   const [members, setMembers] = useState<Record<string, UserProfile>>({});
+  const [chatEnabled, setChatEnabled] = useState(true);
   const [isExpenseOpen, setIsExpenseOpen] = useState(false);
   const [isSettleOpen, setIsSettleOpen] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
@@ -215,6 +216,19 @@ export default function GroupDetail({ groupId, onBack, currentUser }: GroupDetai
       setEditCover(group.coverUrl || '');
     }
   }, [group]);
+
+  // Listen to global chat setting
+  useEffect(() => {
+    const unsubSettings = onSnapshot(doc(db, 'app_settings', 'config'), (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.data();
+        setChatEnabled(data.enableChat !== false); // Default to true if not set
+        console.log('Global chat setting updated:', data.enableChat);
+      }
+    });
+
+    return () => unsubSettings();
+  }, []);
 
   useEffect(() => {
     if (!currentUser || !auth.currentUser) return;
@@ -344,6 +358,37 @@ export default function GroupDetail({ groupId, onBack, currentUser }: GroupDetai
       onBack();
     } catch (error) {
       toast.error('Failed to delete group');
+    }
+  };
+
+  const handleRemoveMember = async (memberId: string) => {
+    const isAdmin = group?.createdBy === currentUser.uid;
+    if (!isAdmin) {
+      toast.error("Only group admin can remove members");
+      return;
+    }
+
+    if (memberId === currentUser.uid) {
+      toast.error("You cannot remove yourself");
+      return;
+    }
+
+    if (memberId === group?.createdBy) {
+      toast.error("You cannot remove the group creator");
+      return;
+    }
+
+    if (!window.confirm("Remove this member from the group?")) return;
+
+    try {
+      await updateDoc(doc(db, 'groups', groupId), {
+        members: arrayRemove(memberId)
+      });
+      console.log('Member removed:', memberId);
+      toast.success("Member removed from group");
+    } catch (error) {
+      toast.error("Failed to remove member");
+      console.error('Error removing member:', error);
     }
   };
 
@@ -649,6 +694,7 @@ export default function GroupDetail({ groupId, onBack, currentUser }: GroupDetai
               currentUser={currentUser}
               currentUserProfile={members[currentUser.uid] || null}
               group={group}
+              chatEnabled={chatEnabled}
               isAdmin={
                 group.createdBy === currentUser.uid || 
                 members[currentUser.uid]?.role === 'admin' || 
@@ -878,20 +924,40 @@ export default function GroupDetail({ groupId, onBack, currentUser }: GroupDetai
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4">
-                  {(Object.values(members) as UserProfile[]).map((member) => (
-                    <div key={member.uid} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-800">
-                      <div className="flex items-center gap-4">
-                        <UserAvatar user={member} className="w-12 h-12" />
-                        <div>
-                          <p className="font-bold text-slate-900 dark:text-white">{member.displayName}</p>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">{member.email}</p>
+                  {(Object.values(members) as UserProfile[]).map((member) => {
+                    const isAdmin = group?.createdBy === currentUser.uid;
+                    const isCurrentUser = member.uid === currentUser.uid;
+                    const isGroupCreator = member.uid === group?.createdBy;
+                    const canRemove = isAdmin && !isCurrentUser && !isGroupCreator;
+
+                    return (
+                      <div key={member.uid} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-800 group">
+                        <div className="flex items-center gap-4">
+                          <UserAvatar user={member} className="w-12 h-12" />
+                          <div>
+                            <p className="font-bold text-slate-900 dark:text-white">{member.displayName}</p>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">{member.email}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {isGroupCreator && (
+                            <Badge variant="secondary" className="bg-primary/10 text-primary border-none">Admin</Badge>
+                          )}
+                          {canRemove && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => handleRemoveMember(member.uid)}
+                              title="Remove member"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
                         </div>
                       </div>
-                      {member.uid === group.createdBy && (
-                        <Badge variant="secondary" className="bg-primary/10 text-primary border-none">Admin</Badge>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>

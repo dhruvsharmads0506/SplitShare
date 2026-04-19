@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db, auth, collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, deleteDoc, doc, updateDoc, Timestamp, where, arrayUnion } from '../firebase';
+import { db, auth, collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, deleteDoc, doc, updateDoc, Timestamp, where, arrayUnion, arrayRemove } from '../firebase';
 import { ChatMessage, Group, UserProfile } from '../types';
 import { User } from 'firebase/auth';
 import { toast } from 'sonner';
@@ -20,6 +20,7 @@ interface GroupChatProps {
   currentUserProfile: UserProfile | null;
   isAdmin: boolean;
   group: Group;
+  chatEnabled?: boolean;
 }
 
 // Browser notification helper function
@@ -60,8 +61,8 @@ const showBrowserNotification = (title: string, body: string, groupId: string) =
   }
 };
 
-export function GroupChat({ groupId, currentUser, currentUserProfile, isAdmin, group }: GroupChatProps) {
-  console.log('GroupChat rendering with:', { groupId, currentUser: currentUser?.uid, group, isAdmin });
+export function GroupChat({ groupId, currentUser, currentUserProfile, isAdmin, group, chatEnabled }: GroupChatProps) {
+  console.log('GroupChat rendering with:', { groupId, currentUser: currentUser?.uid, group, isAdmin, chatEnabled });
 
   // Safety check for required props
   if (!groupId || !currentUser || !group) {
@@ -279,6 +280,26 @@ export function GroupChat({ groupId, currentUser, currentUserProfile, isAdmin, g
     }
   };
 
+  const handleRemoveMember = async (memberId: string) => {
+    if (!isAdmin) {
+      toast.error("Only group admin can remove members");
+      return;
+    }
+
+    if (window.confirm("Remove this member from the group?")) {
+      try {
+        await updateDoc(doc(db, 'groups', groupId), {
+          members: arrayRemove(memberId)
+        });
+        console.log('Member removed:', memberId);
+        toast.success("Member removed from group");
+      } catch (error) {
+        toast.error("Failed to remove member");
+        console.error('Error removing member:', error);
+      }
+    }
+  };
+
   // Helper for long press detection
   const longPressTimer = useRef<any>(null);
   const handleMessageLongPress = (msgId: string, isMyMessage: boolean) => {
@@ -291,8 +312,8 @@ export function GroupChat({ groupId, currentUser, currentUserProfile, isAdmin, g
 
   const pinnedMessages = messages.filter(m => m.isPinned);
 
-  if (group.chatDisabled) {
-    console.log('Chat is disabled for group:', groupId);
+  if (group.chatDisabled || chatEnabled === false) {
+    console.log('Chat is disabled:', { groupChatDisabled: group.chatDisabled, globalChatDisabled: chatEnabled === false, groupId });
     return (
       <div className="flex flex-col items-center justify-center h-[70vh] bg-slate-50 dark:bg-slate-900 border-2 border-dashed dark:border-slate-800 rounded-3xl p-8 text-center space-y-4">
         <div className="bg-amber-100 dark:bg-amber-900/30 p-4 rounded-full">
@@ -301,7 +322,10 @@ export function GroupChat({ groupId, currentUser, currentUserProfile, isAdmin, g
         <div className="space-y-2 max-w-sm">
           <h3 className="text-xl font-bold text-slate-900 dark:text-white">Chat Deactivated</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            The group messaging feature has been disabled for this group by an administrator.
+            {chatEnabled === false 
+              ? "Chat has been disabled globally by an administrator."
+              : "The group messaging feature has been disabled for this group by an administrator."
+            }
           </p>
         </div>
         {isAdmin && (
@@ -325,10 +349,13 @@ export function GroupChat({ groupId, currentUser, currentUserProfile, isAdmin, g
     <div className="flex flex-col h-full min-h-[600px] bg-white dark:bg-slate-900 rounded-3xl border dark:border-slate-800 shadow-2xl overflow-hidden border-none text-left z-20">
       {/* Active Users Section */}
       <div className="px-4 py-3 bg-slate-50/50 dark:bg-slate-800/20 border-b dark:border-slate-800 flex items-center gap-4">
-        <div className="flex -space-x-2 overflow-hidden py-1">
+        <div className="flex -space-x-2 overflow-hidden py-1 relative group/members">
           {activeMembers.map((member) => {
             const isOnline = getIsOnline(member);
             const lastSeenText = member.lastSeenAt ? `Last seen ${formatDistanceToNow(member.lastSeenAt.toDate())} ago` : 'Offline';
+            const memberIsAdmin = member.uid === group.createdBy || member.uid === (group as any).adminId;
+            const currentUserIsAdmin = isAdmin; // Current user is admin
+            const isGroupCreator = member.uid === group.createdBy;
             
             return (
               <div key={member.uid} className="relative group/avatar">
@@ -343,9 +370,21 @@ export function GroupChat({ groupId, currentUser, currentUserProfile, isAdmin, g
                   "absolute bottom-0 right-0 w-2.5 h-2.5 border-2 border-white dark:border-slate-900 rounded-full",
                   isOnline ? "bg-green-500" : "bg-slate-400"
                 )} />
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/avatar:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">
-                  {member.displayName} • {isOnline ? 'Online Now' : lastSeenText}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/avatar:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none flex items-center gap-2">
+                  <span>{member.displayName} • {isOnline ? 'Online Now' : lastSeenText}</span>
+                  {memberIsAdmin && <span className="text-[8px] bg-amber-500 px-1.5 py-0.5 rounded-full font-bold">ADMIN</span>}
                 </div>
+
+                {/* Remove Member Button - Only visible if: current user is admin AND member is not self AND member is not group creator */}
+                {currentUserIsAdmin && member.uid !== currentUser?.uid && !isGroupCreator && (
+                  <button
+                    onClick={() => handleRemoveMember(member.uid)}
+                    className="absolute -top-2 -right-2 opacity-0 group-hover/avatar:opacity-100 transition-opacity bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-lg z-50 cursor-pointer"
+                    title="Remove member"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                )}
               </div>
             );
           })}

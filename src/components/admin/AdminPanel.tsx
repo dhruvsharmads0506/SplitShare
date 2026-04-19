@@ -148,10 +148,32 @@ export default function AdminPanel({ currentUser, onBack }: AdminPanelProps) {
     try {
       const configRef = doc(db, 'app_settings', 'config');
       await setDoc(configRef, { ...appSettings, ...updates }, { merge: true });
-      // toast.success("Settings updated"); // Minimalist: can omit for instant feel
+      console.log('Settings updated:', updates);
     } catch (error) {
       toast.error("Failed to update settings");
       console.error(error);
+    }
+  };
+
+  const handleChatToggle = async (enabled: boolean) => {
+    console.log('handleChatToggle called:', { enabled, userRole: currentUser.role, isOwner: currentUser.isOwner });
+    
+    if (currentUser.role !== 'super_admin' && !currentUser.isOwner) {
+      toast.error("Unauthorized: Only Super Admins can change this setting.");
+      console.warn('User not authorized for chat toggle');
+      return;
+    }
+
+    try {
+      const configRef = doc(db, 'app_settings', 'config');
+      const updatedSettings = { ...appSettings, enableChat: enabled };
+      console.log('Updating app_settings/config with enableChat:', enabled);
+      await setDoc(configRef, updatedSettings, { merge: true });
+      console.log('Chat setting updated successfully:', enabled);
+      toast.success('Chat setting updated');
+    } catch (error: any) {
+      console.error('Error updating chat setting:', error);
+      toast.error(`Failed to update chat setting: ${error.message}`);
     }
   };
 
@@ -200,6 +222,12 @@ export default function AdminPanel({ currentUser, onBack }: AdminPanelProps) {
 
     if (userToMod.isOwner) {
       toast.error("Owner protection enabled: You cannot modify the permanent owner.");
+      return;
+    }
+
+    // Role changes require Super Admin
+    if (['make_admin', 'remove_admin', 'make_super'].includes(action) && currentUser.role !== 'super_admin') {
+      toast.error("Only Super Admins can change user roles.");
       return;
     }
 
@@ -460,25 +488,29 @@ export default function AdminPanel({ currentUser, onBack }: AdminPanelProps) {
                                 {user.isBlocked ? 'Unblock' : 'Block'}
                               </Button>
 
-                              {user.role === 'user' ? (
-                                <Button variant="outline" size="sm" className="rounded-xl text-[10px] font-black uppercase h-9 border-none bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600" onClick={() => handleUserAction(user.uid, 'make_admin')}>
-                                  <ShieldCheck className="w-3 h-3 mr-1" /> Admin
-                                </Button>
-                              ) : (
-                                <Button variant="outline" size="sm" className="rounded-xl text-[10px] font-black uppercase h-9 border-none bg-slate-100 dark:bg-slate-800 text-slate-500" onClick={() => handleUserAction(user.uid, 'remove_admin')}>
-                                  Revoke
-                                </Button>
-                              )}
-                              
-                              {currentUser.role === 'super_admin' && user.role !== 'super_admin' && (
-                                <Button variant="outline" size="sm" className="rounded-xl text-[10px] font-black uppercase h-9 border-none bg-amber-50 dark:bg-amber-900/20 text-amber-600" onClick={() => handleUserAction(user.uid, 'make_super')}>
-                                  <Crown className="w-3 h-3 mr-1" /> Super
-                                </Button>
-                              )}
+                              {currentUser.role === 'super_admin' && (
+                                <>
+                                  {user.role === 'user' ? (
+                                    <Button variant="outline" size="sm" className="rounded-xl text-[10px] font-black uppercase h-9 border-none bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600" onClick={() => handleUserAction(user.uid, 'make_admin')}>
+                                      <ShieldCheck className="w-3 h-3 mr-1" /> Admin
+                                    </Button>
+                                  ) : (
+                                    <Button variant="outline" size="sm" className="rounded-xl text-[10px] font-black uppercase h-9 border-none bg-slate-100 dark:bg-slate-800 text-slate-500" onClick={() => handleUserAction(user.uid, 'remove_admin')}>
+                                      Revoke
+                                    </Button>
+                                  )}
+                                  
+                                  {user.role !== 'super_admin' && (
+                                    <Button variant="outline" size="sm" className="rounded-xl text-[10px] font-black uppercase h-9 border-none bg-amber-50 dark:bg-amber-900/20 text-amber-600" onClick={() => handleUserAction(user.uid, 'make_super')}>
+                                      <Crown className="w-3 h-3 mr-1" /> Super
+                                    </Button>
+                                  )}
 
-                              <Button variant="ghost" size="sm" className="rounded-xl text-[10px] font-black uppercase h-9 text-slate-400 hover:text-red-600" onClick={() => handleUserAction(user.uid, 'delete')}>
-                                <Trash2 className="w-3 h-3 mr-1" /> Delete
-                              </Button>
+                                  <Button variant="ghost" size="sm" className="rounded-xl text-[10px] font-black uppercase h-9 text-slate-400 hover:text-red-600" onClick={() => handleUserAction(user.uid, 'delete')}>
+                                    <Trash2 className="w-3 h-3 mr-1" /> Delete
+                                  </Button>
+                                </>
+                              )}
                             </>
                           ) : (
                             <div className="col-span-2 py-2 px-3 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-100 dark:border-amber-800/30 flex items-center justify-center gap-2">
@@ -746,7 +778,7 @@ export default function AdminPanel({ currentUser, onBack }: AdminPanelProps) {
                         </div>
                         <Switch 
                           checked={appSettings.enableChat} 
-                          onCheckedChange={(checked) => handleUpdateSettings({ enableChat: checked })}
+                          onCheckedChange={handleChatToggle}
                         />
                       </div>
                       <div className="flex items-center justify-between">
