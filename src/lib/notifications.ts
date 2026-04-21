@@ -50,7 +50,7 @@ export function setupOnMessageListener() {
 
 export async function triggerNotification(type: 'NEW_EXPENSE' | 'PAYMENT_SETTLED' | 'PAYMENT_REMINDER' | 'NEW_CHAT_MESSAGE', payload: any) {
   try {
-    await fetch('/api/notify', {
+    await fetch('https://splitshare-vywe.onrender.com/api/notify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type, payload })
