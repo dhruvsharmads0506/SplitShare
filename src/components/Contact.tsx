@@ -88,7 +88,7 @@ export default function Contact({ user }: ContactProps) {
               </div>
               <div>
                 <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">Email Support</p>
-                <p className="font-bold dark:text-white">support@splitshare.app</p>
+                <p className="font-bold dark:text-white">hello.splitshare@gmail.com</p>
               </div>
             </div>
             <div className="flex items-center gap-4 group">
@@ -97,18 +97,43 @@ export default function Contact({ user }: ContactProps) {
               </div>
               <div>
                 <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">Call Support</p>
-                <p className="font-bold dark:text-white">+91 0000 000 000</p>
+                <p className="font-bold dark:text-white">Phone support coming soon</p>
               </div>
             </div>
             <div className="flex items-center gap-4 group">
               <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                 <MapPin className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">Our Location</p>
-                <p className="font-bold dark:text-white">New Delhi, India</p>
-              </div>
-            </div>
+              <div className="flex items-start gap-4 group">
+  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+    <MapPin className="w-5 h-5" />
+  </div>
+
+  <div className="w-full">
+    <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">
+      Our Location
+    </p>
+    <p className="font-bold text-slate-900 dark:text-white">
+      Greater Noida, Uttar Pradesh, India
+    </p>
+    <p className="text-sm text-slate-400 mb-3">
+      Remote support available
+    </p>
+
+    {/* Google Map */}
+    <div className="w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-lg">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224408.21866029402!2d77.35118391668684!3d28.49826040410097!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cea64b8f89aef%3A0xec0ccabb5317962e!2sGreater%20Noida%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1777317256937!5m2!1sen!2sin"
+        width="100%"
+        height="220"
+        style={{ border: 0 }}
+        loading="lazy"
+        allowFullScreen
+        referrerPolicy="no-referrer-when-downgrade"
+        className="rounded-2xl"
+      ></iframe>
+    </div>
+  </div>
+</div>
           </div>
         </div>
 
