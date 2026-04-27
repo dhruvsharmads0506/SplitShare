@@ -96,7 +96,7 @@ export default function Contact({ user }: ContactProps) {
                 <Phone className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">Call Support</p>
+                <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">Support</p>
                 <p className="font-bold dark:text-white">Phone support coming soon</p>
               </div>
             </div>
@@ -116,7 +116,7 @@ export default function Contact({ user }: ContactProps) {
       Remote support available
     </p>
 
-   <div className="w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-lg mt-2">
+   <div className="w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-lg mt-4">
       <iframe
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224408.21866029402!2d77.35118391668684!3d28.49826040410097!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cea64b8f89aef%3A0xec0ccabb5317962e!2sGreater%20Noida%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1777317256937!5m2!1sen!2sin"
         width="100%"
